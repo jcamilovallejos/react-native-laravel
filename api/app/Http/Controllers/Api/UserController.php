@@ -56,7 +56,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        return response(User::find($id), 200);
     }
 
     /**
