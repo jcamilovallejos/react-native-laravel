@@ -9,17 +9,20 @@ const UserList = (props) => {
     const [users, setUsers] = useState([])
 
     useEffect(()=>{
-        axios.get('http://192.168.1.2:8000/api/users')
-        .then(res => {
-            let data = res.data
-            setUsers(data)
-            // data.forEach(element => {
-            //     console.log(element)
-            // });
-        })
-        .catch(err => {
-            console.error(err); 
-        })
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            axios.get('http://192.168.1.2:8000/api/users')
+            .then(res => {
+                console.log(res.data)
+                let data = res.data
+                setUsers(data)
+            })
+            .catch(err => {
+                console.error(err); 
+            })
+        });
+
+        return unsubscribe
+
     },[])
 
 

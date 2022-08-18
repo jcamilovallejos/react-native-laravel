@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {View, Text, ScrollView, TextInput, StyleSheet, ActivityIndicator} from 'react-native'
+import {View, Text, ScrollView, TextInput, StyleSheet, ActivityIndicator, Button, Alert} from 'react-native'
 import axios from 'axios'
 
 const UserDetailScreen = (props) => {
@@ -10,8 +10,27 @@ const UserDetailScreen = (props) => {
     const userId = props.route.params.userId
     const [loading, setLoading] = useState(false)
 
+
+    const deleteUser = () => {
+        axios.delete('http://192.168.1.2:8000/api/users/'+userId)
+        .then(res => {
+            props.navigation.navigate('UserList')
+        })
+        .catch(err => {
+            console.error(err); 
+        })
+    }
+
+    const openConformationAlert = () => {
+        Alert.alert('Remove the user', 'Are you sure?',[
+            {text: 'Yes', onPress: () => deleteUser()},
+            {text: 'No', onPress: () => {return}}
+        ])
+    }
+
+
     useEffect(() => {
-        
+
         axios.get('http://192.168.1.2:8000/api/users/'+userId)
         .then(res => {
             setName(res.data.name) 
@@ -43,6 +62,9 @@ const UserDetailScreen = (props) => {
             </View>
             <View style={styles.inputGroup}>
                 <TextInput keyboardType='numeric' placeholder='Phone user' value={phone}></TextInput>
+            </View>
+            <View>
+                <Button color="#E37399" title="Delete user" onPress={() => openConformationAlert()} />
             </View>
         </ScrollView>
     )
