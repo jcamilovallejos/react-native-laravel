@@ -1,9 +1,8 @@
 import React, {useState} from 'react'
 import {View, Button, TextInput, ScrollView, StyleSheet} from 'react-native'
-import firebase from '../database/firebase'
 import axios from 'axios'
 
-const CreateUserScreen = () => {
+const CreateUserScreen = (props) => {
 
     const [state, setState] = useState({
         name: '', 
@@ -16,8 +15,8 @@ const CreateUserScreen = () => {
     }
 
     const saveNewUser = async () => {
-        if(state.name === ''){
-            alert('Please provide a name')
+        if(state.name === '' || state.email === ''){
+            alert('Please complete all data')
             return
         }else{
 
@@ -27,16 +26,17 @@ const CreateUserScreen = () => {
                 password: state.phone
             })
             .then(res => {
-                alert('Saved')
+                props.navigation.navigate('UserList')
             })
             .catch(err => {
                 if(err.response !== undefined){
-                    alert(err.response.data.errors)
+                    if(err.response.data.errors)
                     setState({
                         name: state.name, 
                         email: '',
                         phone: state.phone
                     })
+                    alert('Email already taken')
                 }else{
                     alert("The server is disconnected in this moment")
                 }
